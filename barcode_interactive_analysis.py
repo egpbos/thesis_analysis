@@ -189,6 +189,7 @@ def slab_plot(slab, axes=None, title="", vmin=None,
               remove_bottom_cblabel=False, cbar_kwargs={},
               tick_fmt="%3.1f", cb_N_ticks=9, cbar_location='right',
               grey_negative_densities=True, determine_ticks_label_add=0.,
+              xlabel_top_set_label_position=False,
               **kwargs):
     """
     cut_x, cut_y: tuple in Mpc/h
@@ -198,9 +199,12 @@ def slab_plot(slab, axes=None, title="", vmin=None,
         axes = fig.add_subplot(111)
 
     if xlabel_top:
-        axes_top = axes.twiny()
-        pl.setp(axes_top.get_xticklabels(), visible=False)
-        pl.setp(axes.get_xticklabels(), visible=False)
+        if xlabel_top_set_label_position:
+            axes.xaxis.set_label_position('top')
+        else:
+            axes_top = axes.twiny()
+            pl.setp(axes_top.get_xticklabels(), visible=False)
+            pl.setp(axes.get_xticklabels(), visible=False)
 
     vmin, vmax = vminmax_grid_slice(slab, vmin, vmax, v_ratio)
 
@@ -232,10 +236,13 @@ def slab_plot(slab, axes=None, title="", vmin=None,
             y_extent = (0, boxsize)
         extent = [x_extent[0], x_extent[1], y_extent[0], y_extent[1]]
 
-        if xlabel_top:
-            axes_top.set_xlabel(xlabel)
-        else:
+        if xlabel_top_set_label_position:
             axes.set_xlabel(xlabel)
+        else:
+            if xlabel_top:
+                axes_top.set_xlabel(xlabel)
+            else:
+                axes.set_xlabel(xlabel)
         axes.set_ylabel(ylabel)
 
     if grey_negative_densities:
@@ -382,6 +389,14 @@ rss_style = {
     'log_cbar': True,
     'xlabel': r"$\zeta_z$ (Mpc/h)",
     'ylabel': r"$\zeta_y$ (Mpc/h)",
+}
+
+rss_style_paper = {
+    'interpolation': 'spline36',
+    'cmap': pal_rss,
+    'log_cbar': True,
+    'xlabel': r"$s_z$ (Mpc/h)",
+    'ylabel': r"$s_y$ (Mpc/h)",
 }
 
 pal_lag = matplotlib.colors.ListedColormap(sns.color_palette("coolwarm",
