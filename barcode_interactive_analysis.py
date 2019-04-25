@@ -315,6 +315,8 @@ def slab_plot(slab, axes=None, title="", vmin=None,
         return_bin += (axes, im)
         if colorbar:
             return_bin += (cbar, cax)
+        if xlabel_top and not xlabel_top_set_label_position:
+            return_bin += (axes_top,)
     if return_norm:
         return_bin += (norm,)
     return return_bin
